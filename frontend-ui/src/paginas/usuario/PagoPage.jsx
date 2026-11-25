@@ -108,7 +108,7 @@ export default function PagoPage() {
   useEffect(() => {
     if (!confirmacion?.reservationId || !token) return undefined;
     let cancelado = false;
-    (async () => {
+    void (async () => {
       try {
         const reserva = await obtenerReserva(confirmacion.reservationId, token);
         const [sala, pelicula] = await Promise.all([
