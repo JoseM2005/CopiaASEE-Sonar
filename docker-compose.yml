@@ -54,8 +54,7 @@ services:
       # Reutiliza el volumen creado con docker run (mismos datos)
       - mysql_usuarios_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -ucinasee -pcinasee --silent"]
-      interval: 5s
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -ucinasee -p$$MYSQL_PASSWORD --silent"]      interval: 5s
       timeout: 5s
       retries: 20
       start_period: 30s
