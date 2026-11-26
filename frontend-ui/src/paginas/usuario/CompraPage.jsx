@@ -23,7 +23,7 @@ import MapaButacas from '../../components/MapaButacas';
    - Reservas exige un token del Comp. 3: cliente registrado o invitado.
    --------------------------------------------------------- */
 const SS_COMPRA_KEY = COMPRA_KEY;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
 /** Máximo de butacas por reserva que admite Reservas */
 const MAX_ENTRADAS = 10;
 
