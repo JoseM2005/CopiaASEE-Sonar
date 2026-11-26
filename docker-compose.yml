@@ -25,7 +25,7 @@ services:
       - "127.0.0.1:15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: cinasee
-      RABBITMQ_DEFAULT_PASS: cinasee
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Define RABBITMQ_PASSWORD en el fichero .env}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
@@ -49,12 +49,12 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD en el fichero .env}
       MYSQL_DATABASE: cinasee_users_db
       MYSQL_USER: cinasee
-      MYSQL_PASSWORD: cinasee
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en el fichero .env}
     volumes:
       # Reutiliza el volumen creado con docker run (mismos datos)
       - mysql_usuarios_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -ucinasee -pcinasee --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -ucinasee -p$$MYSQL_PASSWORD --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -97,14 +97,14 @@ services:
       MYSQL_PORT: 3306
       MYSQL_DATABASE: cinasee_users_db
       MYSQL_USER: cinasee
-      MYSQL_PASSWORD: cinasee
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en el fichero .env}
       REDIS_HOST: redis-usuarios
       REDIS_PORT: 6379
       # Mismo broker que los Componentes 2 y 4
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: cinasee
-      RABBITMQ_PASSWORD: cinasee
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?Define RABBITMQ_PASSWORD en el fichero .env}
       # El "iss" del token sigue siendo localhost para que lo validen los demás
       JWT_ISSUER: http://localhost:8083/v1/iam
       # El seed de C1 crea Madrid con este UUID; el staff demo apunta al mismo
@@ -171,7 +171,7 @@ services:
     environment:
       POSTGRES_DB: cine_reservas_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_RESERVAS_PASSWORD:?Define POSTGRES_RESERVAS_PASSWORD en el fichero .env}
     volumes:
       - postgres_reservas_data:/var/lib/postgresql/data
     healthcheck:
@@ -203,12 +203,12 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: cine_reservas_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_RESERVAS_PASSWORD:?Define POSTGRES_RESERVAS_PASSWORD en el fichero .env}
       # Comunicación ASÍNCRONA: publica PaymentCompleted en payment.exchange (lo consumen Comp. 3 y 4)
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: cinasee
-      RABBITMQ_PASSWORD: cinasee
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?Define RABBITMQ_PASSWORD en el fichero .env}
       # Comunicación SÍNCRONA (OpenFeign) con Cartelera y Usuarios por la red de Docker
       CARTELERA_URL: http://componente1-cartelera:8081/api/v1
       USUARIOS_URL: http://componente3-usuarios:8083/v1/iam
@@ -243,7 +243,7 @@ services:
     environment:
       POSTGRES_DB: cine_analytics_dw
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_ANALITICA_PASSWORD:?Define POSTGRES_ANALITICA_PASSWORD en el fichero .env}
     volumes:
       - postgres_analitica_data:/var/lib/postgresql/data
     healthcheck:
@@ -274,15 +274,15 @@ services:
       DB_HOST: postgres-analitica
       DB_PORT: 5432
       DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_PASSWORD: ${POSTGRES_ANALITICA_PASSWORD:?Define POSTGRES_ANALITICA_PASSWORD en el fichero .env}
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-analitica:5432/cine_analytics_dw
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_ANALITICA_PASSWORD:?Define POSTGRES_ANALITICA_PASSWORD en el fichero .env}
       # Configuración de RabbitMQ apuntando al broker
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: cinasee
-      RABBITMQ_PASSWORD: cinasee
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?Define RABBITMQ_PASSWORD en el fichero .env}
       # URLs para comunicación con otros microservicios en la red de Docker
       CARTELERA_SERVICE_URL: http://componente1-cartelera:8081/api/v1
       # Ventas (fuente principal de ocupación y taquilla): context-path /v1
