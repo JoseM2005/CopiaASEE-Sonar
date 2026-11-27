@@ -146,7 +146,7 @@ export default function Inicio() {
 
       {/* Modal flotante con buscador de cines */}
       {modalAbierto && (
-        <div className="flotante-overlay" onClick={() => setModalAbierto(false)}>
+        <div className="flotante-overlay" role="presentation" onClick={() => setModalAbierto(false)}>
           <div
             className="flotante-panel"
             onClick={(e) => e.stopPropagation()}
